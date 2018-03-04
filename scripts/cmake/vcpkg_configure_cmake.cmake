@@ -151,8 +151,8 @@ function(vcpkg_configure_cmake)
     if(VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
         list(APPEND _csc_OPTIONS "-DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}")
     else()
-        set(VCPKG_CXX_FLAGS " /DWIN32 /D_WINDOWS /W3 /utf-8 /GR /EHsc /MP /FS ${VCPKG_CXX_FLAGS}")
-        set(VCPKG_C_FLAGS " /DWIN32 /D_WINDOWS /W3 /utf-8 /MP /FS ${VCPKG_C_FLAGS}")
+        set(VCPKG_CXX_FLAGS " /DWIN32 /D_WINDOWS /W3 /utf-8 /GR /EHsc /MP ${VCPKG_CXX_FLAGS}")
+        set(VCPKG_C_FLAGS " /DWIN32 /D_WINDOWS /W3 /utf-8 /MP ${VCPKG_C_FLAGS}")
         if(VCPKG_CRT_LINKAGE STREQUAL "dynamic")
             list(APPEND _csc_OPTIONS_DEBUG
                 "-DCMAKE_CXX_FLAGS_DEBUG=/D_DEBUG /MDd /Z7 /Ob0 /Od /RTC1 ${VCPKG_CXX_FLAGS_DEBUG}"
