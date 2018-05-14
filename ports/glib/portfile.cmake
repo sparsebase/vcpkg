@@ -1,12 +1,17 @@
  # Glib uses winapi functions not available in WindowsStore
-if (VCPKG_CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
+if(VCPKG_CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
     message(FATAL_ERROR "Error: UWP builds are currently not supported.")
 endif()
 
-# Glib relies on DllMain
-if (VCPKG_LIBRARY_LINKAGE STREQUAL static)
-    message(STATUS "Warning: Static building not supported. Building dynamic.")
-    set(VCPKG_LIBRARY_LINKAGE dynamic)
+# Glib relies on DllMain on Windows
+if(NOT VCPKG_CMAKE_SYSTEM_NAME)
+    if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+        message("Glib relies on DllMain and therefore cannot be built statically")
+        set(VCPKG_LIBRARY_LINKAGE "dynamic")
+    endif()
+    if(VCPKG_CRT_LINKAGE STREQUAL "static")
+        message(FATAL_ERROR "Glib only supports dynamic library and crt linkage")
+    endif()
 endif()
 
 include(vcpkg_common_functions)
@@ -26,6 +31,7 @@ vcpkg_apply_patches(
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt DESTINATION ${SOURCE_PATH})
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/cmake DESTINATION ${SOURCE_PATH})
 file(REMOVE_RECURSE ${SOURCE_PATH}/glib/pcre)
+file(WRITE ${SOURCE_PATH}/glib/pcre/Makefile.in)
 file(REMOVE ${SOURCE_PATH}/glib/win_iconv.c)
 
 vcpkg_configure_cmake(
@@ -35,7 +41,8 @@ vcpkg_configure_cmake(
         -DGLIB_VERSION=${GLIB_VERSION}
     OPTIONS_DEBUG
         -DGLIB_SKIP_HEADERS=ON
-        -DGLIB_SKIP_TOOLS=ON)
+        -DGLIB_SKIP_TOOLS=ON
+    )
 
 vcpkg_install_cmake()
 vcpkg_copy_pdbs()
