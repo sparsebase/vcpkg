@@ -16,8 +16,8 @@ vcpkg_from_github(
             vs2017-15.4-workaround.patch
             boost_uuid_random_generator_compat.patch
             uuid-detail-sha1.patch
-	fix_cuda_on_nurbs.patch"
-	fix_sac_thrust.patch"
+            fix_cuda_on_nurbs.patch
+            fix_sac_thrust.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" PCL_SHARED_LIBS)
