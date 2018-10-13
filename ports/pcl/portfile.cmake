@@ -18,6 +18,7 @@ vcpkg_from_github(
             uuid-detail-sha1.patch
             fix_cuda_on_nurbs.patch
             fix_sac_thrust.patch
+			fix_visualizer_new_constructor.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" PCL_SHARED_LIBS)
