@@ -9,8 +9,7 @@ vcpkg_from_github(
     PATCHES pcl_utils.patch
             pcl_config.patch
             find_flann.patch
-            fix_cuda_on_nurbs.patch
-            fix_sac_thrust.patch
+            fix_nurbs_surface.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" PCL_SHARED_LIBS)
