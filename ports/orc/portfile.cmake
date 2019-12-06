@@ -1,18 +1,18 @@
-include(vcpkg_common_functions)
-
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO apache/orc
-    REF f47e02cfbf346f14d7f38c3ddd45d39e3b515847
-    SHA512 5a389f4ab3b0ce4e7c8869493cf9e91feb4917a42bf2740abd71602fa03a2a53217b572e60af7328b7568dab084c07275ea275438ec8ae87f230a87fb60f2601
+    REF 61e9d008d06a4f9291ee62737fbfd0e34f9b20d5 # rel/release-1.5.7
+    SHA512 0c19bc91629bd5b201542e57de9eb1d6cc09fae507fb07a5ad589a631cb78957d32d888840f393c9e4ee0c60bc2ba534107eb97c31d80cd6e487df346fb719f7
     HEAD_REF master
     PATCHES
-      0001-dependencies-from-vcpkg.patch
-      0002-fix-executable-output-folder.patch
+      0003-dependencies-from-vcpkg.patch
+      0004-update-tzdata.patch
+      0005-disable-tzdata.patch
 )
 
 file(REMOVE "${SOURCE_PATH}/cmake_modules/FindGTest.cmake")
 file(REMOVE "${SOURCE_PATH}/cmake_modules/FindLZ4.cmake")
+file(REMOVE "${SOURCE_PATH}/cmake_modules/FindZSTD.cmake")
 file(REMOVE "${SOURCE_PATH}/cmake_modules/FindProtobuf.cmake")
 file(REMOVE "${SOURCE_PATH}/cmake_modules/FindSnappy.cmake")
 file(REMOVE "${SOURCE_PATH}/cmake_modules/FindZLIB.cmake")
@@ -33,15 +33,18 @@ vcpkg_configure_cmake(
   SOURCE_PATH ${SOURCE_PATH}
   PREFER_NINJA
   OPTIONS
-  -DBUILD_TOOLS=${BUILD_TOOLS}
-  -DBUILD_CPP_TESTS=OFF
-  -DBUILD_JAVA=OFF
-  -DINSTALL_VENDORED_LIBS=OFF
-  -DBUILD_LIBHDFSPP=OFF
-  -DPROTOBUF_EXECUTABLE:FILEPATH=${PROTOBUF_EXECUTABLE}
+    -DBUILD_TOOLS=${BUILD_TOOLS}
+    -DBUILD_CPP_TESTS=OFF
+    -DBUILD_JAVA=OFF
+    -DINSTALL_VENDORED_LIBS=OFF
+    -DBUILD_LIBHDFSPP=OFF
+    -DPROTOBUF_EXECUTABLE:FILEPATH=${PROTOBUF_EXECUTABLE}
+    -DSTOP_BUILD_ON_WARNING=OFF
+    -DENABLE_TEST=OFF
 )
 
 vcpkg_install_cmake()
+vcpkg_copy_pdbs()
 
 file(GLOB TOOLS ${CURRENT_PACKAGES_DIR}/bin/orc-*)
 if(TOOLS)
@@ -57,8 +60,6 @@ endif()
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
 
-file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/orc RENAME copyright)
-
-vcpkg_copy_pdbs()
 
 file(COPY ${CMAKE_CURRENT_LIST_DIR}/usage DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT})
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
