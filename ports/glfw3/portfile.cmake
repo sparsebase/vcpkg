@@ -1,16 +1,12 @@
-include(vcpkg_common_functions)
-
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO glfw/glfw
-    REF 3.3
-    SHA512 e74bb7ba0c1c3a524a193c4fb5a2d13ba0e75f8e309612ea19cdcc944859d6e2fe29d8b2e3db76236e1011b637564ddd5f4a176dcccfeb84d09bda060f08f774
+    REF 814b7929c5add4b0541ccad26fb81f28b71dc4d8 #v3.3.4
+    SHA512 8e34d011ab49940b405998312af4807e4c9837a44d95d873cb3723e7c141da6a10c1dfaf1652f03b31b911f0ae4515ded52cac02844435dc374b93d376921e43
     HEAD_REF master
-    PATCHES
-        fix-config.patch
 )
 
-if(NOT VCPKG_TARGET_IS_WINDOWS)
+if(VCPKG_TARGET_IS_LINUX)
     message(
 "GLFW3 currently requires the following libraries from the system package manager:
     xinerama
@@ -34,20 +30,9 @@ vcpkg_install_cmake()
 
 vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/glfw3)
 
-file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
+vcpkg_fixup_pkgconfig()
 
-if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
-    if(EXISTS ${CURRENT_PACKAGES_DIR}/lib/glfw3.dll OR EXISTS ${CURRENT_PACKAGES_DIR}/debug/lib/glfw3.dll)
-        file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/bin ${CURRENT_PACKAGES_DIR}/debug/bin)
-        file(RENAME ${CURRENT_PACKAGES_DIR}/lib/glfw3.dll ${CURRENT_PACKAGES_DIR}/bin/glfw3.dll)
-        file(RENAME ${CURRENT_PACKAGES_DIR}/debug/lib/glfw3.dll ${CURRENT_PACKAGES_DIR}/debug/bin/glfw3.dll)
-        foreach(_conf release debug)
-            file(READ ${CURRENT_PACKAGES_DIR}/share/glfw3/glfw3Targets-${_conf}.cmake _contents)
-            string(REPLACE "lib/glfw3.dll" "bin/glfw3.dll" _contents "${_contents}")
-            file(WRITE ${CURRENT_PACKAGES_DIR}/share/glfw3/glfw3Targets-${_conf}.cmake "${_contents}")
-        endforeach()
-    endif()
-endif()
+file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 
 file(INSTALL ${SOURCE_PATH}/LICENSE.md DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
 

@@ -1,5 +1,3 @@
-include(vcpkg_common_functions)
-
 if (EXISTS "${CURRENT_BUILDTREES_DIR}/src/.git")
     file(REMOVE_RECURSE ${CURRENT_BUILDTREES_DIR}/src)
 endif()
@@ -7,11 +5,10 @@ endif()
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO google/googletest
-    REF cd17fa2abda2a2e4111cdabd62a87aea16835014 #version 1.10.0 commit on 2019.10.09
-    SHA512 0899ebc21821e1978e8831ac89698fc88bf98ec7e22b9dd4f9eea0459396f6834ef35f6ee2afd1b8ca9432722e561c30905f8d87614d012bb711d295ebc1d833
+    REF f5e592d8ee5ffb1d9af5be7f715ce3576b8bf9c4 #commite on 2021-04-29
+    SHA512 8168cc2b2c2f18ae7411db8a74369c98bb2d19b5be94a5a5f96a1d4e8e22b70c219c1cdfaef934b674d9c078dd97d0481c62e382aab432e3b89aa79ea5051673
     HEAD_REF master
     PATCHES
-        0002-Fix-z7-override.patch
         fix-main-lib-path.patch
 )
 
@@ -28,7 +25,7 @@ vcpkg_configure_cmake(
 )
 
 vcpkg_install_cmake()
-vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/GTest)
+vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/GTest TARGET_PATH share/GTest)
 
 file(
     INSTALL
@@ -48,7 +45,6 @@ file(
 )
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
-file(INSTALL ${SOURCE_PATH}/googletest/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/gtest RENAME copyright)
 
 if(EXISTS ${CURRENT_PACKAGES_DIR}/debug/lib/gtest_maind.lib)
     file(MAKE_DIRECTORY ${CURRENT_PACKAGES_DIR}/debug/lib/manual-link)
@@ -78,4 +74,4 @@ endif()
 
 vcpkg_copy_pdbs()
 
-file(COPY ${CMAKE_CURRENT_LIST_DIR}/usage DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT})
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

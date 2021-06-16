@@ -1,16 +1,26 @@
-# header-only library
-
-include(vcpkg_common_functions)
-
 vcpkg_from_github(
-    OUT_SOURCE_PATH SOURCE_PATH
-    REPO martinus/robin-hood-hashing
-    REF 3.4.0
-    SHA512 7985d64063af7d28b9404639df48645d2d72b0bc752fde23c7e3bf431adbd8eb4ffbc439e5a8513a39eb54481ce875fb044fafc86c36046995e3193284a594dd
-    HEAD_REF master
+	OUT_SOURCE_PATH SOURCE_PATH
+	REPO martinus/robin-hood-hashing
+	REF 3.11.2
+	SHA512 5d55f054e29ae34d410eb0103f9f0aa1faf47e313b9f089c73b9c26fd9bedf132f6bb13b4bcd2664309c32fe7e859e346d0a6e7ab7f46b294f9b8db207577795
+	HEAD_REF master
 )
 
-file(COPY ${SOURCE_PATH}/src/include/robin_hood.h DESTINATION ${CURRENT_PACKAGES_DIR}/include)
+vcpkg_cmake_configure(
+	SOURCE_PATH ${SOURCE_PATH}
+	OPTIONS
+		-DRH_STANDALONE_PROJECT=OFF
+)
 
-# Handle copyright
-configure_file(${SOURCE_PATH}/LICENSE ${CURRENT_PACKAGES_DIR}/share/${PORT}/copyright COPYONLY)
+vcpkg_cmake_install()
+vcpkg_cmake_config_fixup(
+	PACKAGE_NAME robin_hood
+	CONFIG_PATH lib/cmake/robin_hood
+)
+
+file(REMOVE_RECURSE
+	${CURRENT_PACKAGES_DIR}/debug
+	${CURRENT_PACKAGES_DIR}/lib
+)
+
+file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)

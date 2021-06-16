@@ -1,10 +1,8 @@
-include(vcpkg_common_functions)
-
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO KDE/kplotting
-    REF v5.58.0
-    SHA512 4d2fd69bad6c3117084811453bd32fdd92d1f1df89dba489e6109caad9268107d908e0df6f3e35a460878aa32fe4744173cf96ff292858d657c49582ee1674fc
+    REF v5.81.0
+    SHA512 bdeb55a3949abfe9673f3b799ba157c27aade2860bfd5db4588dcedd580f4be5f452434a8c56af25bceec1391c05a9e0d522b398f38c3acf5a3bfdb8f5d7c77d
     HEAD_REF master
 )
 
@@ -22,4 +20,7 @@ vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/KF5Plotting)
 vcpkg_copy_pdbs()
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
-file(INSTALL ${SOURCE_PATH}/COPYING.LIB DESTINATION ${CURRENT_PACKAGES_DIR}/share/kf5plotting RENAME copyright)
+file(RENAME ${CURRENT_PACKAGES_DIR}/debug/lib/plugins ${CURRENT_PACKAGES_DIR}/debug/plugins)
+file(RENAME ${CURRENT_PACKAGES_DIR}/lib/plugins ${CURRENT_PACKAGES_DIR}/plugins)
+
+file(INSTALL ${SOURCE_PATH}/LICENSES/ DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT}/copyright)
